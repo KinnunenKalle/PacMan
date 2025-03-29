@@ -84,11 +84,11 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
     private Image pacmanLeftImage;
     private Image pacmanRightImage;
 
-    // X = wall, O = skip, P = pac man, ' ' = food
+    // X = wall, O = skip, P = pac man, ' ' = food, C=cherry
     // Ghosts: b = blue, o = orange, p = pink, r = red
     private String[] tileMap = {
             "XXXXXXXXXXXXXXXXXXX",
-            "X        X        X",
+            "XC       X       CX",
             "X XX XXX X XXX XX X",
             "X                 X",
             "X XX X XXXXX X XX X",
@@ -106,7 +106,7 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
             "XX X X XXXXX X X XX",
             "X    X   X   X    X",
             "X XXXXXX X XXXXXX X",
-            "X                 X",
+            "XC               CX",
             "XXXXXXXXXXXXXXXXXXX"
     };
 
