@@ -283,7 +283,18 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
             loadMap();
             resetPositions();
         }
-// teleport pacman from the gap in the wall
+
+        // check cherry collision
+        Block cherryEaten = null;
+        for (Block cherry : cherries) {
+            if (collision(pacman, cherry)) {
+                cherryEaten = cherry;
+                score += 20;
+            }
+        }
+        cherries.remove(cherryEaten);
+
+        // teleport pacman from the gap in the wall
         if (pacman.y == tileSize * 9 && pacman.x == 0) {
             pacman.x = tileSize * columnCount;
         } else if (pacman.y == tileSize * 9 && pacman.x == tileSize * columnCount) {
