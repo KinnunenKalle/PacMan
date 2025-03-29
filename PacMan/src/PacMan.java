@@ -84,6 +84,7 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
     private Image pacmanLeftImage;
     private Image pacmanRightImage;
     private Image cherryImage;
+    private Image scaredGhostImage;
 
     // X = wall, O = skip, P = pac man, ' ' = food, C=cherry
     // Ghosts: b = blue, o = orange, p = pink, r = red
@@ -142,6 +143,7 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
         pacmanLeftImage = new ImageIcon(getClass().getResource("./pacmanLeft.png")).getImage();
         pacmanRightImage = new ImageIcon(getClass().getResource("./pacmanRight.png")).getImage();
         cherryImage = new ImageIcon(getClass().getResource("./cherry.png")).getImage();
+        scaredGhostImage = new ImageIcon(getClass().getResource("./scaredGhost.png")).getImage();
 
         loadMap();
         for (Block ghost : ghosts) {
@@ -286,13 +288,16 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
 
         // check cherry collision
         Block cherryEaten = null;
+        Block originalGhost = null;
         for (Block cherry : cherries) {
             if (collision(pacman, cherry)) {
                 cherryEaten = cherry;
                 score += 20;
+                changeGhosts();
             }
         }
         cherries.remove(cherryEaten);
+        ghosts.remove(originalGhost);
 
         // teleport pacman from the gap in the wall
         if (pacman.y == tileSize * 9 && pacman.x == 0) {
@@ -307,6 +312,40 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
                 a.x + a.width > b.x &&
                 a.y < b.y + b.height &&
                 a.y + a.height > b.y;
+
+    }
+
+    public void changeGhosts() {
+        for (int r = 0; r < rowCount; r++) {
+            for (int c = 0; c < columnCount; c++) {
+                String row = tileMap[r];
+                char tileMapChar = row.charAt(c);
+
+                int x = c * tileSize;
+                int y = r * tileSize;
+
+                if (tileMapChar == 'o') { // change ghosts image
+                    Block ghost = new Block(scaredGhostImage, x, y, tileSize, tileSize);
+                    ghosts.add(ghost);
+                } else if (tileMapChar == 'b') {
+                    Block ghost = new Block(scaredGhostImage, x, y, tileSize, tileSize);
+                    ghosts.add(ghost);
+                } else if (tileMapChar == 'p') {
+                    Block ghost = new Block(scaredGhostImage, x, y, tileSize, tileSize);
+                    ghosts.add(ghost);
+                } else if (tileMapChar == 'r') {
+                    Block ghost = new Block(scaredGhostImage, x, y, tileSize, tileSize);
+                    ghosts.add(ghost);
+                }
+
+            }
+
+        }
+        // need to make the new ghost move with this for loop
+        for (Block ghost : ghosts) {
+            char newDirection = directions[random.nextInt(4)];
+            ghost.updateDirection(newDirection);
+        }
 
     }
 
