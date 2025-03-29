@@ -83,6 +83,7 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
     private Image pacmanDownImage;
     private Image pacmanLeftImage;
     private Image pacmanRightImage;
+    private Image cherryImage;
 
     // X = wall, O = skip, P = pac man, ' ' = food, C=cherry
     // Ghosts: b = blue, o = orange, p = pink, r = red
@@ -113,6 +114,7 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
     HashSet<Block> walls;
     HashSet<Block> foods;
     HashSet<Block> ghosts;
+    HashSet<Block> cherries;
     Block pacman;
 
     Timer gameLoop;
@@ -139,6 +141,7 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
         pacmanDownImage = new ImageIcon(getClass().getResource("./pacmanDown.png")).getImage();
         pacmanLeftImage = new ImageIcon(getClass().getResource("./pacmanLeft.png")).getImage();
         pacmanRightImage = new ImageIcon(getClass().getResource("./pacmanRight.png")).getImage();
+        cherryImage = new ImageIcon(getClass().getResource("./cherry.png")).getImage();
 
         loadMap();
         for (Block ghost : ghosts) {
@@ -155,6 +158,7 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
         walls = new HashSet<Block>();
         foods = new HashSet<Block>();
         ghosts = new HashSet<Block>();
+        cherries = new HashSet<Block>();
 
         for (int r = 0; r < rowCount; r++) {
             for (int c = 0; c < columnCount; c++) {
@@ -185,6 +189,10 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
                 } else if (tileMapChar == ' ') { // FOOD
                     Block food = new Block(null, x + 14, y + 14, 4, 4);
                     foods.add(food);
+                } else if (tileMapChar == 'C') { // cherry
+                    Block cherry = new Block(cherryImage, x, y, tileSize, tileSize);
+                    cherries.add(cherry);
+
                 }
             }
 
@@ -204,6 +212,10 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
         }
         for (Block wall : walls) {
             g.drawImage(wall.image, wall.x, wall.y, wall.width, wall.height, null);
+        }
+
+        for (Block cherry : cherries) {
+            g.drawImage(cherry.image, cherry.x, cherry.y, cherry.width, cherry.height, null);
         }
 
         g.setColor(Color.WHITE);
