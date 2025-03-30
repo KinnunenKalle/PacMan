@@ -288,16 +288,16 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
 
         // check cherry collision
         Block cherryEaten = null;
-        Block originalGhost = null;
         for (Block cherry : cherries) {
+
             if (collision(pacman, cherry)) {
                 cherryEaten = cherry;
                 score += 20;
                 changeGhosts();
+
             }
         }
         cherries.remove(cherryEaten);
-        ghosts.remove(originalGhost);
 
         // teleport pacman from the gap in the wall
         if (pacman.y == tileSize * 9 && pacman.x == 0) {
@@ -316,35 +316,10 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
     }
 
     public void changeGhosts() {
-        for (int r = 0; r < rowCount; r++) {
-            for (int c = 0; c < columnCount; c++) {
-                String row = tileMap[r];
-                char tileMapChar = row.charAt(c);
 
-                int x = c * tileSize;
-                int y = r * tileSize;
-
-                if (tileMapChar == 'o') { // change ghosts image
-                    Block ghost = new Block(scaredGhostImage, x, y, tileSize, tileSize);
-                    ghosts.add(ghost);
-                } else if (tileMapChar == 'b') {
-                    Block ghost = new Block(scaredGhostImage, x, y, tileSize, tileSize);
-                    ghosts.add(ghost);
-                } else if (tileMapChar == 'p') {
-                    Block ghost = new Block(scaredGhostImage, x, y, tileSize, tileSize);
-                    ghosts.add(ghost);
-                } else if (tileMapChar == 'r') {
-                    Block ghost = new Block(scaredGhostImage, x, y, tileSize, tileSize);
-                    ghosts.add(ghost);
-                }
-
-            }
-
-        }
-        // need to make the new ghost move with this for loop
+        // need to change the image attribute
         for (Block ghost : ghosts) {
-            char newDirection = directions[random.nextInt(4)];
-            ghost.updateDirection(newDirection);
+            ghost.image = scaredGhostImage;
         }
 
     }
