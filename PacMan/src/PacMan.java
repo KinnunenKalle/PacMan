@@ -253,16 +253,14 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
             if (collision(ghost, pacman) && ghost.image == scaredGhostImage) {
                 ghostEaten = ghost;
                 score += 50;
-                lives = 3;
-                if (collision(ghost, pacman)) {
-                    lives -= 1;
-                    if (lives == 0) {
-                        gameOver = true;
-                        return;
-                    }
-
-                    resetPositions();
+            } else if (collision(ghost, pacman)) {
+                lives -= 1;
+                if (lives == 0) {
+                    gameOver = true;
+                    return;
                 }
+
+                resetPositions();
             }
 
             if (ghost.y == tileSize * 9 && ghost.direction != 'U' && ghost.direction != 'D') {
