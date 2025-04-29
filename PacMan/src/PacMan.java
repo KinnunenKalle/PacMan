@@ -119,12 +119,12 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
     Block pacman;
 
     Timer gameLoop;
-    Timer scaredGhosts;
     char[] directions = { 'U', 'D', 'L', 'R' }; // up down left and right
     Random random = new Random();
     int score = 0;
     int lives = 3;
     boolean gameOver = false;
+    boolean win = true;
 
     PacMan() {
         setPreferredSize(new Dimension(boardWidth, boardHeight));
@@ -229,9 +229,12 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
         g.setFont(new Font("Arial", Font.PLAIN, 18));
         if (gameOver) {
             g.drawString("Game Over: " + String.valueOf(score), tileSize / 2, tileSize / 2);
+        } else if (win) {
+            g.drawString("You ate all the ghosts. WINNER!", tileSize / 2, tileSize / 2);
         } else {
             g.drawString("x" + String.valueOf(lives) + " Score: " + String.valueOf(score), tileSize / 2, tileSize / 2);
         }
+
     }
 
     public void move() {
@@ -253,6 +256,8 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
             if (collision(ghost, pacman) && ghost.image == scaredGhostImage) {
                 ghostEaten = ghost;
                 score += 50;
+                resetGhosts();
+
             } else if (collision(ghost, pacman)) {
                 lives -= 1;
                 if (lives == 0) {
@@ -293,6 +298,10 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
         if (foods.isEmpty()) {
             loadMap();
             resetPositions();
+        }
+
+        if (ghosts.isEmpty()) {
+            win = true;
         }
 
         // check cherry collision
@@ -337,6 +346,17 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
 
     }
 
+    public void resetGhosts() {
+
+        for (Block ghost : ghosts) {
+            ghost.image = redGhostImage;
+            ghost.image = pinkGhostImage;
+            ghost.image = orangeGhostImage;
+            ghost.image = blueGhostImage;
+
+        }
+    }
+
     public void resetPositions() {
         pacman.reset();
         pacman.velocityX = 0;
@@ -356,6 +376,9 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
             gameLoop.stop();
 
         }
+        if (win) {
+            gameLoop.stop();
+        }
     }
 
     @Override
@@ -374,6 +397,14 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
             lives = 3;
             score = 0;
             gameOver = false;
+            gameLoop.start();
+        }
+        if (win) {
+            loadMap();
+            resetPositions();
+            lives = 3;
+            score = 0;
+            win = false;
             gameLoop.start();
         }
 
