@@ -119,6 +119,7 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
     Block pacman;
 
     Timer gameLoop;
+    Timer scaredGhosts;
     char[] directions = { 'U', 'D', 'L', 'R' }; // up down left and right
     Random random = new Random();
     int score = 0;
@@ -246,16 +247,24 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
             }
         }
 
-        // check ghost collisions
+        // check ghost collisions and ghosts bacome edible while being scared
+        Block ghostEaten = null;
         for (Block ghost : ghosts) {
-            if (collision(ghost, pacman)) {
-                lives -= 1;
-                if (lives == 0) {
-                    gameOver = true;
-                    return;
+            if (collision(ghost, pacman) && ghost.image == scaredGhostImage) {
+                ghostEaten = ghost;
+                score += 50;
+                lives = 3;
+                if (collision(ghost, pacman)) {
+                    lives -= 1;
+                    if (lives == 0) {
+                        gameOver = true;
+                        return;
+                    }
+
+                    resetPositions();
                 }
-                resetPositions();
             }
+
             if (ghost.y == tileSize * 9 && ghost.direction != 'U' && ghost.direction != 'D') {
                 ghost.updateDirection('U');
             }
@@ -269,8 +278,10 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
                     ghost.updateDirection(newDirection);
                 }
             }
-        }
 
+        }
+        // remove the ghost when it is edible
+        ghosts.remove(ghostEaten);
         // check food collision
         Block foodEaten = null;
         for (Block food : foods) {
@@ -288,6 +299,7 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
 
         // check cherry collision
         Block cherryEaten = null;
+
         for (Block cherry : cherries) {
 
             if (collision(pacman, cherry)) {
@@ -296,13 +308,14 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
                 changeGhosts();
 
             }
+
         }
         cherries.remove(cherryEaten);
 
         // teleport pacman from the gap in the wall
-        if (pacman.y == tileSize * 9 && pacman.x == 0) {
-            pacman.x = tileSize * columnCount;
-        } else if (pacman.y == tileSize * 9 && pacman.x == tileSize * columnCount) {
+        if (pacman.x < 0) {
+            pacman.x = boardWidth;
+        } else if (pacman.x > boardWidth) {
             pacman.x = 0;
         }
     }
@@ -318,8 +331,10 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
     public void changeGhosts() {
 
         // need to change the image attribute
+
         for (Block ghost : ghosts) {
             ghost.image = scaredGhostImage;
+
         }
 
     }
